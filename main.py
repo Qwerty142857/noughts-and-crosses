@@ -20,13 +20,13 @@ def check_wins(input_grid):#
     else:
         return False
 
-def enter(x=int,y=int,type=str,grid=list):
+def enter(x=int,y=int,type=str,grid=list): #check input is not blocked by another piece 
     if grid[2-y][x] == "x" or grid[2-y][x] == "o":
         raise KeyError
     grid[2-y][x] = type
     return grid
 
-def user_input(grid):
+def user_input(grid): #checks the user input is valid
     cords = input("input cords to input: ").strip("()").split(",")
     cords = list(map(int, cords))
     if len(cords) != 2:
@@ -145,6 +145,8 @@ def main():
                         grid[1][1] = "o"
                     elif turn_num == 2 and (grid[2][0] == 'x' == grid[0][2] or grid[0][0]== 'x' == grid[2][2]):
                         grid[0][1] = "o"
+                    elif turn_num == 1 and grid[1][1] == "x":
+                        grid[0][0] = "o"
                     else:
                         
                         empty = []
