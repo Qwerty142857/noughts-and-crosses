@@ -2,7 +2,7 @@ from tabulate import tabulate
 from random import choice
 from sys import exit
 
-def check_wins(input_grid):#
+def check_wins(input_grid):#checks for if either side won
     for row in input_grid:
         if row[0] == row[1] == row[2] != ' ':
             print(f'{row[0]} wins')
@@ -100,6 +100,7 @@ def main():
     while not check_wins(grid):
         if player_turn:
             while True:
+                #user input and valdiation 
                 try:
                     move= user_input(grid)
                     move = list(map(lambda s: s-1, move))
@@ -116,7 +117,7 @@ def main():
                     print("the the position you entered is taken")
         else:    
             #NOTE always take the middle on first turn and if they play diagonal on both sides, go for a side move 
-
+            #checks for areas where noughts can win this turn
             offence = check_near_win(grid,'o')
             if offence[0]:
                 match offence[1]:
@@ -127,8 +128,8 @@ def main():
                     case "diagonal":
                         grid[offence[2]][offence[3]] = 'o'
                     case _:
-                        print(f"bruh: {offence}")
-            else:
+                        print(f"error: {offence}")
+            else: #checks for areas where crosses will win next turn if the program doesn't block them this turn 
                 defence = check_near_win(grid,'x')
                 if defence[0]:
                     match defence[1]:
@@ -139,8 +140,9 @@ def main():
                         case "diagonal":
                             grid[defence[2]][defence[3]] = 'o'
                         case _:
-                            print(f"bruh: {defence}")
+                            print(f"error: {defence}")
                 else:
+                    #does plays which will prevent strageties which can win against opponents who play by just blocking and going for wins 
                     if turn_num == 1 and grid[1][1] == " ":
                         grid[1][1] = "o"
                     elif turn_num == 2 and (grid[2][0] == 'x' == grid[0][2] or grid[0][0]== 'x' == grid[2][2]):
@@ -148,20 +150,22 @@ def main():
                     elif turn_num == 1 and grid[1][1] == "x":
                         grid[0][0] = "o"
                     else:
-                        
+                        #picks a random empty spot on the board and plays it 
                         empty = []
                         y= 0
                         for row in grid:
                             x= 0
                             for square in row:
                                 if square == " ":
-                                    empty.append([x,y])
+                                    empty.append([x,y]) #9 indents is not bad practice right?
                                 x += 1 
                             y += 1
+                        #ends the game with a draw if the board is full 
                         if empty == []:
                             exit("draw")   
                         move = choice(empty)
                         grid[move[1]][move[0]] = 'o'
+            
             turn_num += 1 
             print("I played:") 
             output_table(grid)
